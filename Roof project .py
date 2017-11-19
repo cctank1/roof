@@ -74,8 +74,8 @@ class MainWindow(QDialog):
     def sound():
         previous_time = 0
         while True:
-            status=GPIO.input(11)
-            if status and (time.time()-previous_time) > 0.5 and (time.time() - self.last_time) > 10:
+            thunderDetected=GPIO.input(11)
+            if thunderDetected and (time.time()-previous_time) > 0.5 and (time.time() - self.last_time) > 10:
                 print("thunder")
                 self.close()
                 previous_time = time.time()
