@@ -21,14 +21,14 @@ class MainWindow(QDialog):
         super(MainWindow, self).__init__()
         self.is_open = True
         self.sound = False
-        self.last_time = 0
+        self.timeDoorWasOpened = 0
         
         uic.loadUi("GUIRoof.ui", self)
         
         self.closeButton.clicked.connect(self.on_close)
         self.openButton.clicked.connect(self.on_open)
         self.haltButton.clicked.connect(self.on_halt)
-        threading.Thread(target=self.sound).start()
+        #threading.Thread(target=self.sound).start()
         #threading.Thread(target=self.light).start()
         
             
@@ -51,10 +51,11 @@ class MainWindow(QDialog):
     def on_open(self):
         
         if not self.is_open:
-            self.last_time = time.time()
+            self.timeDoorWasOpened = time.time()
             threading.Thread(target=self.open).start()
     def open(self):
-        GPIO.output(14, False)
+        
+		GPIO.output(14, False)
         GPIO.output(13, True)
         print("open")
         t0 = time.time()
@@ -66,19 +67,20 @@ class MainWindow(QDialog):
         GPIO.output(13, False)
                  #this number shows how many seconds the motor is on.
         self.is_open=False
+		
+		threading.Thread(target=self.thunderProtection).start()
     #def light():
      #   while
        #     GPIO.input(11, True)
    # self.open()
     
-    def sound():
-        previous_time = 0
-        while True:
+    def thunderProtection():
+        while true:
             thunderDetected=GPIO.input(11)
-            if thunderDetected and (time.time()-previous_time) > 0.5 and (time.time() - self.last_time) > 10:
+            if thunderDetected and (time.time() - self.timeDoorWasOpened) > 10:  #negates sound for 10 seconds when opening.
                 print("thunder")
                 self.close()
-                previous_time = time.time()
+				break
             time.sleep(0.0001)
             
         
