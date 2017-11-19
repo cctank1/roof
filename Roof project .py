@@ -75,7 +75,7 @@ class MainWindow(QDialog):
         previous_time = 0
         while True:
             thunderDetected=GPIO.input(11)
-            if thunderDetected and (time.time()-previous_time) > 0.5 and (time.time() - self.last_time) > 10:
+            if thunderDetected and (time.time()-previous_time) > 0.6 and (time.time() - self.last_time) > 10:
                 print("thunder")
                 self.close()
                 previous_time = time.time()
